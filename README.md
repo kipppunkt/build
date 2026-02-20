@@ -19,7 +19,7 @@ However, reviewing only after a feature is fully built produces mediocre results
 
 ## Quick start
 
-**1. Create a bot GitHub account** and [generate a fine-grained PAT](https://github.com/settings/personal-access-tokens/new) with **Contents**, **Pull requests**, and **Issues** permissions (read/write) for your repo. Invite the bot as a collaborator to your repo.
+**1. Create a bot GitHub account** and [generate a GitHub token](https://github.com/settings/tokens) with **repo** permissions. Invite the bot as a collaborator to your repo.
 
 **2. Set `GH_TOKEN`** in your shell:
 
@@ -91,15 +91,14 @@ Alternatively, you can also install it without NodeJS. Download the binary for y
 
 Create a separate GitHub account for the bot (e.g. `my-kipppunkt-agent`). Invite it as a collaborator to your repository.
 
-#### 2. Generate a Fine-Grained PAT
+#### 2. Generate a GitHub token
 
 Log in as the bot account, then:
 
-1. Go to **Settings → Developer settings → Personal access tokens → Fine-grained tokens**
-2. Click **Generate new token**
-3. Set repository access to the target repo(s)
-4. Grant permissions: **Contents** (read/write), **Pull requests** (read/write), **Issues** (read/write)
-5. Copy the token (`github_pat_...` or `ghp_...`)
+1. Go to **Settings → Developer settings → Personal access tokens → Tokens (classic)**
+2. Click **Generate new token → Generate new token (classic)** 
+3. Grant all permissions for **repo**, then click on **Generate new token**
+4. Copy the token
 
 This single token covers both git credential auth and `gh` CLI auth.
 
