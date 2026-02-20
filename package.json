@@ -1,7 +1,13 @@
 {
   "name": "@kipppunkt/build",
   "version": "0.2.1",
-  "description": "Autonomous AI coding workflow with human-in-the-loop via GitHub PRs",
+  "description": "24/7 autonomous AI coding workflow with HITL via GitHub PRs. kipppunkt ships. You review - from anywhere 🏝️",
+  "homepage": "https://kipppunkt.dev",
+  "author": {
+    "name": "Georg Unterholzner",
+    "email": "georg.unterholzner.coding@gmail.com",
+    "url": "https://georg.dev"
+  },
   "bin": {
     "kipppunkt-build": "bin/kipppunkt-build"
   },
@@ -12,9 +18,15 @@
     "bin/",
     "scripts/"
   ],
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/kipppunkt/build.git"
-  }
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "orchestrator",
+    "ralph",
+    "hitl"
+  ]
 }
