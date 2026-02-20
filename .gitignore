@@ -1,2 +1,6 @@
 node_modules/
 bin/
+
+# kipppunkt
+.kipppunkt/state.json
+.kipppunkt/workspaces/
