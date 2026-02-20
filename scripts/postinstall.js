@@ -74,12 +74,12 @@ function main() {
     fs.mkdirSync(binDir, { recursive: true });
   }
 
-  console.log(`Downloading ${binaryName} v${version}...`);
+  console.log(`Downloading ${binaryName} from v${version}...`);
 
   download(url, dest)
     .then((size) => {
       fs.chmodSync(dest, 0o755);
-      console.log(`\nDone! (${formatBytes(size)})`);
+      console.log(`\nDone!`);
     })
     .catch((err) => {
       console.error(`Failed to download binary: ${err.message}`);
