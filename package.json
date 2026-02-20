@@ -1,0 +1,20 @@
+{
+  "name": "@kipppunkt/build",
+  "version": "0.2.1",
+  "description": "Autonomous AI coding workflow with human-in-the-loop via GitHub PRs",
+  "bin": {
+    "kipppunkt-build": "bin/kipppunkt-build"
+  },
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  },
+  "files": [
+    "bin/",
+    "scripts/"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kipppunkt/build.git"
+  }
+}
