@@ -29,6 +29,7 @@ if [ "$CURRENT_VERSION" != "$VERSION" ]; then
   "
   git -C "$ROOT_DIR" add package.json
   git -C "$ROOT_DIR" commit -m "Bump version to $VERSION"
+  git -C "$ROOT_DIR" push
 fi
 
 # Tag and push
