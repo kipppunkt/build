@@ -25,6 +25,21 @@ const SUPPORTED = [
   "windows-x64",
 ];
 
+function formatBytes(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function renderProgressBar(downloaded, total) {
+  const width = 30;
+  const fraction = downloaded / total;
+  const filled = Math.round(width * fraction);
+  const bar = "█".repeat(filled) + "░".repeat(width - filled);
+  const pct = (fraction * 100).toFixed(0).padStart(3);
+  process.stdout.write(`\r  [${bar}] ${pct}% ${formatBytes(downloaded)} / ${formatBytes(total)}`);
+}
+
 function main() {
   const platform = PLATFORM_MAP[process.platform];
   const arch = ARCH_MAP[process.arch];
@@ -62,9 +77,9 @@ function main() {
   console.log(`Downloading ${binaryName} from v${version}...`);
 
   download(url, dest)
-    .then(() => {
+    .then((size) => {
       fs.chmodSync(dest, 0o755);
-      console.log("Done.");
+      console.log(`\nDone!`);
     })
     .catch((err) => {
       console.error(`Failed to download binary: ${err.message}`);
@@ -93,9 +108,23 @@ function download(url, dest, redirects = 0) {
           );
         }
 
+        const totalBytes = parseInt(res.headers["content-length"], 10) || 0;
+        let downloaded = 0;
+
+        if (totalBytes) {
+          renderProgressBar(0, totalBytes);
+        }
+
+        res.on("data", (chunk) => {
+          downloaded += chunk.length;
+          if (totalBytes) {
+            renderProgressBar(downloaded, totalBytes);
+          }
+        });
+
         const file = fs.createWriteStream(dest);
         res.pipe(file);
-        file.on("finish", () => file.close(resolve));
+        file.on("finish", () => file.close(() => resolve(downloaded)));
         file.on("error", (err) => {
           fs.unlinkSync(dest);
           reject(err);
