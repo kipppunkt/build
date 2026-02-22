@@ -2,24 +2,25 @@
 
 Autonomous AI coding workflow with human-in-the-loop via GitHub PRs:
 
-@kipppunkt/build takes your features → implements → opens PRs → responds to reviews → repeats. 24/7.
+`@kipppunkt/build` takes your features → implements → opens PRs → responds to reviews → repeats. 24/7.
 
-You review & merge - from anywhere 🏝️
+You review - from anywhere 🏝️
 
-> **Want to see @kipppunkt/build in action?** [Check out the pull requests](https://github.com/issues?q=is%3Apr%20user%3Akipppunkt%20author%3Akipppunkt-agent) - kipp•punkt builds itself.
+> **Want to see `@kipppunkt/build` in action?** [Check out the pull requests](https://github.com/kipppunkt/build/pulls?q=is%3Apr+author%3Akipppunkt-agent) - kipp•punkt builds itself.
 
-## Why kipp•punkt?
+## Why `@kipppunkt/build`?
 
-AI coding agents have already moved software engineering out of the IDE. But sitting in a terminal watching an agent work is just the next intermediary. The interface of the future is simpler: define what to build, review what was built.                               
-                           
-However, reviewing only after a feature is fully built produces mediocre results. Sometimes the agent lacks context, sometimes your requirements were wrong to begin with. Either way, you find out too late. So review earlier, via the interface you already use.
+> From **Kipppunkt** (German: *tipping point*).
 
-`@kipppunkt/build` is a step in this direction: an agent orchestrator that turns requirements into pull requests and reacts to your feedback. It works around the clock. You review from anywhere. Stay in the loop without staying at your desk.
+AI coding agents are already moving software engineering out of the IDE. But sitting in a terminal watching an agent type is just the next intermediary. 
 
+The interface of the future is simpler: define what to build, review what was built.
+
+`@kipppunkt/build` is the first concrete building block of the [kipp•punkt vision](https://github.com/kipppunkt): an agent orchestrator that turns requirements into pull requests and reacts to your feedback. It works around the clock. You review from anywhere. Stay in the loop without staying at your desk.
 
 ## Quick start
 
-**1. Create a bot GitHub account** and [generate a GitHub token](https://github.com/settings/tokens) with **repo** permissions. Invite the bot as a collaborator to your repo.
+**1. Create a bot GitHub account** and [generate a GitHub token](https://github.com/settings/tokens) with `repo` permissions. Invite the bot as a collaborator to your repo.
 
 **2. Set `GH_TOKEN`** in your shell:
 
@@ -27,20 +28,7 @@ However, reviewing only after a feature is fully built produces mediocre results
 export GH_TOKEN=ghp_your_bot_token_here
 ```
 
-**3. Configure git identity** so commits in agent workspaces use the bot account:
-
-```bash
-# Add to ~/.gitconfig
-git config --global --add includeIf.gitdir:**/.kipppunkt/workspaces/.path ~/.gitconfig-kipppunkt
-
-# Create ~/.gitconfig-kipppunkt
-git config --file ~/.gitconfig-kipppunkt user.name "your-bot-username"
-git config --file ~/.gitconfig-kipppunkt user.email "your-bot-username@users.noreply.github.com"
-```
-
-See [Bot account setup](#bot-account-setup) for more details.
-
-**4. Create a requirements file**:
+**3. Create a requirements file**:
 
 ```json
 [
@@ -48,28 +36,28 @@ See [Bot account setup](#bot-account-setup) for more details.
 ]
 ```
 
- See [Requirements file format](#requirements-file-format) for more details
+See [Requirements file format](#requirements-file-format) for more details.
 
-**5. Run it**
+**4. Run it**
 
 ```bash
 npx @kipppunkt/build start \
   --requirements-path ./requirements.json \
-  --command "claude -p {prompt} --dangerously-skip-permissions"
+  --command "codex exec {prompt} --dangerously-bypass-approvals-and-sandbox"
 ```
 
-If you use a different harness than Claude Code, see [AI harness commands](#ai-harness-commands).
+If you use a different harness than Codex, see [AI harness commands](#ai-harness-commands).
 
-> **Caution:** in this case, the agent has access to your filesystem & network. For maximum safety, you should run it in a [containerized environment](https://georg.dev/blog/07-sandbox-your-github-copilot-cli-on-linux/).
+> **Caution:** When using a harness command with sandbox/approval bypass flags, the agent has access to your filesystem & network. For maximum safety, you should run it in a [containerized environment](https://georg.dev/blog/07-sandbox-your-github-copilot-cli-on-linux/).
 
 ## Set up
 
 ### Prerequisites
 
 - **AI coding agent** (e.g. Claude Code, Codex CLI, OpenCode)
+- **[gh CLI](https://cli.github.com/)**
 - **Separate GitHub account** for the agent (so PRs come from a distinct user)
-- **[gh CLI](https://cli.github.com/)** authenticated as the agent's GitHub account
-- **Git with HTTPS** - HTTPS is recommended (SSH works but requires extra setup)
+- **Git with HTTPS** - HTTPS is recommended (SSH works but requires bot SSH key setup)
 
 ### Installation
 
@@ -83,7 +71,7 @@ npm install -g @kipppunkt/build
 
 #### Direct download
 
-Alternatively, you can also install it without NodeJS. Download the binary for your platform from [GitHub Releases](https://github.com/kipppunkt/build/releases) and place it on your `PATH`.
+Alternatively, you can also install it without Node.Js. Download the binary for your platform from [GitHub Releases](https://github.com/kipppunkt/build/releases) and place it on your `PATH`.
 
 ### Bot Account Setup
 
@@ -96,11 +84,11 @@ Create a separate GitHub account for the bot (e.g. `my-kipppunkt-agent`). Invite
 Log in as the bot account, then:
 
 1. Go to **Settings → Developer settings → Personal access tokens → Tokens (classic)**
-2. Click **Generate new token → Generate new token (classic)** 
+2. Click **Generate new token → Generate new token (classic)**
 3. Grant all permissions for **repo**, then click on **Generate new token**
 4. Copy the token
 
-This single token covers both git credential auth and `gh` CLI auth.
+This single token covers git credential auth and `gh` CLI auth.
 
 #### 3. Set `GH_TOKEN`
 
@@ -115,49 +103,6 @@ export GH_TOKEN=ghp_your_bot_token_here
 ```
 
 > **Note:** Consider [hiding this command from your bash history](https://dev.to/epranka/hide-the-exported-env-variables-from-the-history-49ni). Alternatively, for a persistent setup, consider using [direnv](https://direnv.net/) with a `.envrc` file in your project root.
-
-#### 4. Configure Git Identity with `includeIf gitdir:`
-
-Since all agent workspaces live under `.kipppunkt/workspaces/`, a single `includeIf` rule in your `~/.gitconfig` applies bot identity to all agent operations - without affecting your own git usage.
-
-Add to your `~/.gitconfig`:
-
-```gitconfig
-[includeIf "gitdir:**/.kipppunkt/workspaces/"]
-  path = ~/.gitconfig-kipppunkt
-```
-
-Then create `~/.gitconfig-kipppunkt` based on your auth method:
-
-##### HTTPS (recommended)
-
-HTTPS is the simplest setup - push auth is handled automatically by the orchestrator. You only need commit identity:
-
-```gitconfig
-# ~/.gitconfig-kipppunkt
-[user]
-  name = kipppunkt-agent
-  email = kipppunkt-agent@users.noreply.github.com
-```
-
-Replace `kipppunkt-agent` with your bot's GitHub username.
-
-##### SSH
-
-Requires a separate SSH key registered to the bot's GitHub account. Unlike HTTPS, SSH users must also configure push auth here:
-
-```gitconfig
-# ~/.gitconfig-kipppunkt
-[user]
-  name = kipppunkt-agent
-  email = kipppunkt-agent@users.noreply.github.com
-[core]
-  sshCommand = ssh -i ~/.ssh/kipppunkt-agent-key
-```
-
-Replace `~/.ssh/kipppunkt-agent-key` with the path to the bot's SSH private key.
-
-> **Note:** `includeIf` only applies to `git` commands. The `gh` CLI uses `GH_TOKEN` regardless of auth method - make sure it's set (step 3).
 
 ## CLI commands
 
@@ -175,11 +120,12 @@ Stop with Ctrl+C; the orchestrator persists state and resumes on next start.
 
 | Option | Required | Default | Description |
 |---|---|---|---|
-| `--command` | Yes | - | Agent command template (see below) |
+| `--command` | Yes | - | Agent command template (see [AI harness command](#ai-harness-commands)) |
 | `--requirements-path` | No | - | Path to requirements JSON file (for initial task ingress) |
 | `--config-path` | No | `.kipppunkt/config.json` | Path to config file |
 | `--log-level` | No | `info` | `error`, `warn`, `info`, or `debug` |
 | `--retry-failed` | No | `false` | Reset all failed tasks to idle on startup |
+| `--orchestrator-url` | No | `http://localhost:2309` | URL of the orchestrator API endpoint |
 | `--shutdown-on-task-failed` | No | `false` | Gracefully shut down when a task enters `failed` state |
 
 #### AI harness commands
@@ -187,9 +133,11 @@ Stop with Ctrl+C; the orchestrator persists state and resumes on next start.
 | Harness | Agent command template |
 |---|---|
 | Codex | `codex exec {prompt} --dangerously-bypass-approvals-and-sandbox` |
-| Claude Code | `claude -p {prompt} --dangerously-skip-permissions` |
+| Claude Code | `claude -p {prompt} --dangerously-skip-permissions`¹ |
 | OpenCode | `opencode run {prompt}` |
 | Copilot CLI | `copilot -p {prompt}` |
+
+[1] For Claude Code, you additionally need to pass the environment variable `IS_SANDBOX=1` to the process, e.g. `IS_SANDBOX=1 kipppunkt-build start --command "claude -p {prompt} --dangerously-skip-permissions"`
 
 ### `ingress`
 
@@ -199,14 +147,12 @@ Loads tasks into the orchestrator task store. Requires the orchestrator to be ru
 kipppunkt-build ingress --requirements <requirements.json> --url <orchestrator-url>
 ```
 
-Required flags:
+| Option | Required | Default | Description |
+|---|---|---|---|
+| `--requirements` | Yes | - | Path to requirements JSON file |
+| `--url` | No | `http://localhost:2309` | URL of the orchestrator API endpoint |
 
-| Option | Required | Description |
-|---|---|---|
-| `--requirements` | Yes | Path to requirements JSON file |
-| `--url` | Yes | Base URL of a running orchestrator API (for example `http://localhost:38291`) |
-
-The orchestrator URL is logged to stdout upon start up.
+The orchestrator URL is logged to stdout upon startup.
 
 ## Config file
 
@@ -225,7 +171,8 @@ Optional JSON config at `.kipppunkt/config.json` (or path specified by `--config
   "allowlist": ["alice", "bob"],
   "requireMention": false,
   "shutdownOnTaskFailed": false,
-  "mergeConflictResolution": "withThreads"
+  "mergeConflictResolution": "withThreads",
+  "orchestratorUrl": "http://localhost:2222"
 }
 ```
 
@@ -243,15 +190,23 @@ Optional JSON config at `.kipppunkt/config.json` (or path specified by `--config
 | `requireMention` | boolean | `false` | When `true`, a thread is only actionable if the latest comment @mentions the bot. Useful to avoid reacting to every comment |
 | `shutdownOnTaskFailed` | boolean | `false` | When `true`, gracefully shut down when a task enters `failed` state |
 | `mergeConflictResolution` | `"never"` \| `"withThreads"` \| `"always"` | `"withThreads"` | Controls auto-resolution of merge conflicts. `never`: no automatic merge conflict resolution. `withThreads`: attempt conflict resolution when actionable threads exist. `always`: invoke agent for conflict resolution even without threads |
+| `orchestratorUrl` | string | `http://localhost:2309` | URL of the orchestrator API endpoint |
 
 ## Requirements file format
 
-The requirements file is a JSON array of objects. 
+The requirements file is a JSON array of objects.
 
-The only required field is `id` (string). Structure beyond `id` is up to you - add whatever context helps your agent.
+The only required field is `id` (string). Everything else is up to you, so add whatever context helps your agent.
 
-Try to write the requirements in a declarative way. Don't describe tasks. Instead describe acceptance criteria and provide context relevant for the final outcome.
+Try to write requirements declaratively. Avoid implementation steps or instructions. Instead, describe acceptance criteria and any context relevant to the desired outcome.
 
+### Requirement dependencies
+
+Requirements are implemented in the order they are provided. In a single-agent setup, ordering them correctly is usually enough to avoid working on requirements whose dependencies are not ready yet.
+
+For a multi-agent setup (`maxConcurrency > 1`), you can declare dependencies among requirements using the `dependsOn` field (array of task IDs). Both `dependsOn` and `depends_on` are accepted. A requirement will not start until all referenced dependencies are resolved.
+
+### Example
 
 ```json
 [
@@ -265,6 +220,7 @@ Try to write the requirements in a declarative way. Don't describe tasks. Instea
   {
     "id": "F-002",
     "title": "Dark mode",
+    "dependsOn": ["F-001"],
     "custom_field": "any structure works"
   }
 ]
