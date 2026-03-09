@@ -64,11 +64,11 @@ function main() {
   const pkg = require(path.join(__dirname, "..", "package.json"));
   const version = pkg.version;
   const isWindows = platform === "windows";
-  const binaryName = `kipppunkt-build-${combo}${isWindows ? ".exe" : ""}`;
-  const url = `https://github.com/kipppunkt/build/releases/download/v${version}/${binaryName}`;
+  const binaryName = `kipppunkt-agent-${combo}${isWindows ? ".exe" : ""}`;
+  const url = `https://github.com/kipppunkt/agent/releases/download/v${version}/${binaryName}`;
 
   const binDir = path.join(__dirname, "..", "bin");
-  const dest = path.join(binDir, `kipppunkt-build${isWindows ? ".exe" : ""}`);
+  const dest = path.join(binDir, `kipppunkt-agent${isWindows ? ".exe" : ""}`);
 
   if (!fs.existsSync(binDir)) {
     fs.mkdirSync(binDir, { recursive: true });
@@ -95,7 +95,7 @@ function download(url, dest, redirects = 0) {
   return new Promise((resolve, reject) => {
     const client = url.startsWith("https") ? https : http;
     client
-      .get(url, { headers: { "User-Agent": "kipppunkt-build-npm" } }, (res) => {
+      .get(url, { headers: { "User-Agent": "kipppunkt-agent-npm" } }, (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
           res.resume();
           return resolve(download(res.headers.location, dest, redirects + 1));

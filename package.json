@@ -1,7 +1,7 @@
 {
-  "name": "@kipppunkt/build",
+  "name": "@kipppunkt/agent",
   "version": "0.3.0",
-  "description": "24/7 autonomous AI coding workflow with HITL via GitHub PRs. kipppunkt ships. You review - from anywhere 🏝️",
+  "description": "kipp•punkt - AI coding agent orchestration. Ideas in. PRs out. Ship from anywhere.",
   "homepage": "https://kipppunkt.dev",
   "author": {
     "name": "Georg Unterholzner",
@@ -9,7 +9,7 @@
     "url": "https://georg.dev"
   },
   "bin": {
-    "kipppunkt-build": "bin/kipppunkt-build"
+    "kipppunkt-agent": "bin/kipppunkt-agent"
   },
   "scripts": {
     "postinstall": "node scripts/postinstall.js"
@@ -20,7 +20,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kipppunkt/build.git"
+    "url": "https://github.com/kipppunkt/agent.git"
   },
   "keywords": [
     "ai",

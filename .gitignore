@@ -1,8 +1,8 @@
 node_modules/
 
 # Downloaded platform binaries (not the JS launcher)
-bin/kipppunkt-build.exe
-bin/kipppunkt-build-*
+bin/kipppunkt-agent.exe
+bin/kipppunkt-agent-*
 
 # kipppunkt
 .kipppunkt/state.json

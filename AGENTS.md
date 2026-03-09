@@ -4,7 +4,7 @@ At the beginning of each conversation, carefully read @README.md.
 
 ## Context
 
-This is the public distribution repo for `@kipppunkt/build`. The source code lives in another repo you don't have access to. This repo contains:
+This is the public distribution repo for `@kipppunkt/agent`. The source code lives in another repo you don't have access to. This repo contains:
 
 - The npm wrapper package (postinstall downloads platform binary, bin entry forwards execution)
 - The README / documentation
